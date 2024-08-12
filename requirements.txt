@@ -1,0 +1,8 @@
+# requirements.txt
+
+beautifulsoup4==4.12.3
+charset-normalizer==3.3.2
+idna==3.7
+requests==2.32.3
+soupsieve==2.5
+urllib3==1.26.16
