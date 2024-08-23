@@ -35,7 +35,7 @@ def get_urls_table(html, class_table):
 
 
 #urls_categorias = ['https://www.legislabahia.ba.gov.br/documentos?categoria%5B0%5D=7']
-#segunda etapa coletar link dos documentos ainda sem paginação
+#coletar link dos documentos ainda sem paginação
 def get_link_documents(urls_categorias):
     links_documentos = []
     for url in urls_categorias:
@@ -49,7 +49,7 @@ def get_link_documents(urls_categorias):
 
 
 #url_docs = ['https://www.legislabahia.ba.gov.br/documentos/lei-no-14764-de-14-de-agosto-de-2024','https://www.legislabahia.ba.gov.br/documentos/lei-no-14763-de-14-de-agosto-de-2024']
-#terceira etapa extrair dados dos documentos
+# extrair dados dos documentos
 def extrair_dados_documentos(url_docs):
     dados = []
     for url in url_docs:
