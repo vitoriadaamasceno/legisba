@@ -9,17 +9,15 @@ url = 'https://www.legislabahia.ba.gov.br/'
 def get_html(url):
     try:
         html = requests.get(url)
-        html.raise_for_status()
+        html.raise_for_status() 
         html_soup = bs(html.content, 'html.parser')
     except requests.exceptions.RequestException as error:
         print("Ocorreu um erro ao solicitar request, verifique a url e sua conexão :",error)
         return 
     return html_soup
 
-html = get_html(url)
 
-
-# primeira etapa coletar a tabela e as urls e categorias
+#coletar a tabela e as urls e categorias
 def get_urls_table(html, class_table):
     try:
         table = html.find('table', {'class': class_table})
@@ -31,12 +29,13 @@ def get_urls_table(html, class_table):
         for line in lines:
             url = line.get('href')
             urls.append('https://www.legislabahia.ba.gov.br'+url)
-            urls = list(set(urls)) #remover duplicatas
+            urls = list(set(urls))
     return urls
 
-#coletar as urls das categorias
-urls_categorias= get_urls_table(html,'table cols-0')
-#coletar link dos documentos ainda sem paginação
+
+
+#urls_categorias = ['https://www.legislabahia.ba.gov.br/documentos?categoria%5B0%5D=7']
+#segunda etapa coletar link dos documentos ainda sem paginação
 def get_link_documents(urls_categorias):
     links_documentos = []
     for url in urls_categorias:
@@ -48,9 +47,9 @@ def get_link_documents(urls_categorias):
     return links_documentos
             
 
-url_docs = get_link_documents(urls_categorias)
-#url_docs = ['https://www.legislabahia.ba.gov.br/documentos/lei-no-14764-de-14-de-agosto-de-2024','https://www.legislabahia.ba.gov.br/documentos/lei-no-14763-de-14-de-agosto-de-2024']
 
+#url_docs = ['https://www.legislabahia.ba.gov.br/documentos/lei-no-14764-de-14-de-agosto-de-2024','https://www.legislabahia.ba.gov.br/documentos/lei-no-14763-de-14-de-agosto-de-2024']
+#terceira etapa extrair dados dos documentos
 def extrair_dados_documentos(url_docs):
     dados = []
     for url in url_docs:
@@ -65,20 +64,26 @@ def extrair_dados_documentos(url_docs):
                     text = html.find_all('div', {'class': 'field field--name-body field--type-text-with-summary field--label-hidden field--item'})
                     dado = {}
                     for i in range(len(label)):
-                        dado[label[i].text] = value[i].text
+                        dado[label[i].text] = value[i].text 
                     #dado['Texto'] = text[0].text
-                    dados.append(dado)
-                    
+                    dados.append(dado)         
     return dados
 
-dados = extrair_dados_documentos(url_docs)
-def emit_json(filename):
+
+def emit_json(filename, dados):
     with open(filename, "w", encoding="utf-8") as json_file:
         json.dump(dados, json_file, ensure_ascii=False, indent=4)         
 
-emit_json('dados.json')
             
 
-
+def main():
+    html = get_html(url)
+    url_categorias = get_urls_table(html,'table cols-0')
+    url_docs =get_link_documents(url_categorias)
+    dados  = extrair_dados_documentos(url_docs)
+    emit_json('dados.json',dados) 
+    
+if __name__ == '__main__':
+    main()
 
         
